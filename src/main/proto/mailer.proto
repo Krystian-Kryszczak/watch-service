@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "app";
+option java_outer_classname = "Mailer";
+option objc_class_prefix = "HLW";
+
+package app;
+
+service MailerService {
+  rpc sendMail (SendMailRequest) returns (MailerReply) {}
+  rpc sendUserActivationCode (MailerRequest) returns (MailerReply) {}
+  rpc sendNewVideoNotification (NotificationRequest) returns (MailerReply) {}
+}
+
+message SendMailRequest {
+  string address = 1;
+  string subject = 2;
+  string content = 3;
+}
+
+message MailerRequest {
+  string address = 1;
+  string content = 2;
+}
+
+message MailerReply {
+  bool successful = 1;
+}
+
+message NotificationRequest {
+  string address = 1;
+  string author = 2;
+  string avatarUrl = 3;
+  string title = 4;
+  string link = 5;
+}
