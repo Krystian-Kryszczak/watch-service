@@ -3,9 +3,11 @@ package app.service.mailer
 import app.MailerReply
 import app.MailerServiceGrpc.MailerServiceStub
 import app.NotificationRequest
-import app.model.exhibit.Exhibit
+import app.model.being.user.User
+import app.model.exhibit.watch.Watch
 import app.service.being.user.UserService
 import io.grpc.stub.StreamObserver
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import jakarta.inject.Singleton
 import org.slf4j.Logger
@@ -13,31 +15,63 @@ import org.slf4j.LoggerFactory
 
 @Singleton
 class MailerServiceGrpc(private val mailerServiceStub: MailerServiceStub, private val userService: UserService): MailerService {
-    override fun sendNewVideoNotification(address: String, video: Exhibit): Single<Boolean> {
-        if (video.name == null || video.creatorId == null || video.id == null) return Single.just(false)
-        return userService.findByIdAsync(video.creatorId!!).map {
-            return@map NotificationRequest.newBuilder()
+    private val singleFalse: Single<Boolean> = Single.just(false)
+    override fun sendNewVideoNotification(address: String, video: Watch): Single<Boolean> {
+        val videoName = video.name ?: return singleFalse
+        val creatorId = video.creatorId ?: return singleFalse
+        val videoId = video.id ?: return singleFalse
+
+        return userService.findByIdAsync(creatorId).map {
+            user -> NotificationRequest.newBuilder()
                 .setAddress(address)
-                .setAuthor("${it.name} ${it.lastname}")
-                //.setAvatarUrl(it.getAvatarUrl())
-                .setTitle(video.name)
+                .setAuthor(formatAuthorData(user))
+                .setAvatarUrl(extractAvatarUrl(user))
+                .setTitle(videoName)
                 .setLink(video.getUrl())
                 .build()
-        }.flatMapSingle { request ->
-            Single.create<MailerReply> {
-                val observer = object: StreamObserver<MailerReply> {
-                    override fun onNext(value: MailerReply) = it.onSuccess(value)
-                    override fun onError(t: Throwable) = it.onError(t)
-                    override fun onCompleted() {}
-                }
-                mailerServiceStub.sendNewVideoNotification(request, observer)
-            }.map { it.successful }.onErrorReturn {
-                logger.error(it.message)
-                return@onErrorReturn false
-            }
+        }.flatMapSingle { notificationRequest ->
+            asObservable<MailerReply> {
+                streamObserver ->  mailerServiceStub.sendNewVideoNotification(notificationRequest, streamObserver)
+            }.doAfterNext {
+                logger.info("new video notification has been sent to -> $address")
+            }.transformToBooleanWithCatchingErrors()
         }.defaultIfEmpty(false)
     }
 
+    private inline fun <T : Any> asObservable(crossinline body: (StreamObserver<T>) -> Unit): Observable<T> =
+        Observable.create { subscription ->
+            val observer = object : StreamObserver<T> {
+                override fun onNext(value: T) = subscription.onNext(value)
+                override fun onError(error: Throwable) = subscription.onError(error)
+                override fun onCompleted() = subscription.onComplete()
+            }
+            body(observer)
+        }
+    private fun Observable<MailerReply>.transformToBooleanWithCatchingErrors() =
+        firstElement()
+            .map {
+                it.successful
+            }
+            .defaultIfEmpty(false)
+            .onErrorReturn {
+                logger.error(it.message)
+                return@onErrorReturn false
+            }
+    private fun formatAuthorData(user: User): String {
+        var result = ""
+
+        val userName = user.name
+        if (!userName.isNullOrBlank()) result += userName
+
+        val userLastname = user.lastname
+        if (!userLastname.isNullOrBlank()) result += userLastname
+
+        return result
+    }
+    private fun extractAvatarUrl(user: User): String? {
+        val id = user.id
+        return if (id != null) "/images/$id" else null // TODO change endpoint address
+    }
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(MailerServiceGrpc::class.java)
     }

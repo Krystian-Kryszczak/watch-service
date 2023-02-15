@@ -18,7 +18,7 @@ import jakarta.inject.Singleton
 import java.util.UUID
 
 @Singleton
-class WatchServiceCassandra(
+class CassandraWatchService(
     private val watchDao: WatchDao,
     private val userService: UserService,
     @Named("local") private val videoBlobService: VideoBlobService,

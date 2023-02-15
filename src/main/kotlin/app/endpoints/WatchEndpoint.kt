@@ -34,15 +34,13 @@ class WatchEndpoint(private val watchService: WatchService) {
     @Post(consumes = [MediaType.MULTIPART_FORM_DATA])
     fun add(@Part title: String, @Part description: String, @Part private: String?,
             @Part content: StreamingFileUpload, @Part miniature: StreamingFileUpload?, authentication: Authentication): Single<out HttpResponse<UUID>> {
-
-        val clientId = SecurityUtils.getClientId(authentication)!!
+        val clientId = SecurityUtils.getClientId(authentication) ?: return Single.just(HttpResponse.unauthorized())
         val watchId = Uuids.timeBased()
         val isPrivate = private?.toBooleanStrictOrNull() == true
 
         return watchService.add(
             Watch(watchId, title, clientId, description, 0, 0, isPrivate),
-            content,
-            miniature
+            content, miniature
         ).map {
             HttpResponse.created(watchId)
         }.onErrorReturn {
