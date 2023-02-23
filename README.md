@@ -1,30 +1,24 @@
-## Micronaut 3.8.0 Documentation
+## Watch Microservice
 
-- [User Guide](https://docs.micronaut.io/3.8.0/guide/index.html)
-- [API Reference](https://docs.micronaut.io/3.8.0/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/3.8.0/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
 ---
+##### Description:
+> This microservice is responsible for adding, removing, modifying watch videos.
+---
+##### Programing language: Kotlin
+##### Used technologies:
 
-- [Jib Gradle Plugin](https://plugins.gradle.org/plugin/com.google.cloud.tools.jib)
-- [Shadow Gradle Plugin](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow)
-## Feature security-jwt documentation
+- Framework » [Micronaut (v. 3.8.0)](https://docs.micronaut.io/3.8.0/guide/index.html)
 
-- [Micronaut Security JWT documentation](https://micronaut-projects.github.io/micronaut-security/latest/guide/index.html)
-
-
-## Feature rxjava3 documentation
-
-- [Micronaut RxJava 3 documentation](https://micronaut-projects.github.io/micronaut-rxjava3/snapshot/guide/index.html)
-
-
-## Feature security documentation
-
-- [Micronaut Security documentation](https://micronaut-projects.github.io/micronaut-security/latest/guide/index.html)
+- DataBase » [Apache Cassandra](https://cassandra.apache.org)
+- Message Broker »  [Apache Kafka](https://kafka.apache.org/)
 
 
-## Feature http-client documentation
-
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
+- Communication » [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) and [gRPC](https://grpc.io/)
 
 
+- Containerization » [Docker](https://www.docker.com/)
+
+
+- Testing
+    - [Kotest](https://kotest.io/)
+---
