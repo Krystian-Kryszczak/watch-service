@@ -5,6 +5,7 @@ import app.service.exhibit.watch.WatchService
 import app.utils.SecurityUtils
 import com.datastax.oss.driver.api.core.uuid.Uuids
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -32,23 +33,26 @@ class WatchEndpoint(private val watchService: WatchService) {
 
     @Secured(SecurityRule.IS_AUTHENTICATED)
     @Post(consumes = [MediaType.MULTIPART_FORM_DATA])
-    fun add(@Part title: String, @Part description: String, @Part private: String?,
-            @Part content: StreamingFileUpload, @Part miniature: StreamingFileUpload?, authentication: Authentication): Single<out HttpResponse<UUID>> {
+    fun add(@Part watch: Watch, @Part content: StreamingFileUpload, @Part miniature: StreamingFileUpload?, authentication: Authentication): Single<out HttpResponse<UUID>> {
+        if (watch.isInvalid()) return Single.just(HttpResponse.status(HttpStatus.BAD_REQUEST, "watch is invalid"))
+
+        val generatedWatchId = Uuids.timeBased()
         val clientId = SecurityUtils.getClientId(authentication) ?: return Single.just(HttpResponse.unauthorized())
-        val watchId = Uuids.timeBased()
-        val isPrivate = private?.toBooleanStrictOrNull() == true
+
+        watch.id = generatedWatchId
+        watch.creatorId = clientId
 
         return watchService.add(
-            Watch(watchId, title, clientId, description, 0, 0, isPrivate),
+            watch,
             content, miniature
         ).map {
-            HttpResponse.created(watchId)
+            HttpResponse.created(generatedWatchId)
         }.onErrorReturn {
             logger.error(it.message, it.stackTrace)
             return@onErrorReturn HttpResponse.serverError()
         }
     }
-
+    private fun Watch.isInvalid(): Boolean = id != null || creatorId != null
     companion object {
         private val logger = LoggerFactory.getLogger(WatchEndpoint::class.java)
     }
