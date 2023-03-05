@@ -5,7 +5,7 @@ import app.service.being.user.UserService
 import app.service.blob.media.image.ImageBlobService
 import app.service.blob.media.video.VideoBlobService
 import app.service.exhibit.AbstractExhibitService
-import app.storage.cassandra.dao.exhibit.look.WatchDao
+import app.storage.cassandra.dao.exhibit.watch.WatchDao
 import app.utils.SecurityUtils
 import io.micronaut.http.multipart.StreamingFileUpload
 import io.micronaut.security.authentication.Authentication

@@ -2,7 +2,7 @@ package app.storage.cassandra.factory
 
 import app.storage.cassandra.dao.DaoMapper
 import app.storage.cassandra.dao.being.user.UserDao
-import app.storage.cassandra.dao.exhibit.look.WatchDao
+import app.storage.cassandra.dao.exhibit.watch.WatchDao
 import com.datastax.oss.driver.api.core.CqlIdentifier
 import com.datastax.oss.driver.api.core.CqlSession
 import io.micronaut.context.annotation.Factory
