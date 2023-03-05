@@ -1,6 +1,5 @@
-package app.storage.cloud.local.blob.media.audio
+package app.service.blob.media.local.audio
 
-import app.cloud.local.blob.media.audio.LocalAudioStorage
 import io.kotest.core.spec.style.StringSpec
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -10,7 +9,7 @@ import java.io.File
 import java.util.*
 
 @MicronautTest
-class LocalCloudAudioStorageTest(localAudioStorage: LocalAudioStorage): StringSpec({
+class LocalCloudAudioStorageTest(localAudioStorage: AudioStorage): StringSpec({
 
     suspend fun saveAndDownloadTest(private: Boolean): Boolean {
         val randomCreatorId = UUID.randomUUID()
