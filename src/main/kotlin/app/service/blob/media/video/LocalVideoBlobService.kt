@@ -1,7 +1,7 @@
 package app.service.blob.media.video
 
-import app.service.blob.media.LocalMediaService
+import app.service.blob.media.LocalMediaBlobService
 import jakarta.inject.Singleton
 
 @Singleton
-class LocalVideoService: LocalMediaService("video"), VideoService
+class LocalVideoBlobService: LocalMediaBlobService("video"), VideoBlobService

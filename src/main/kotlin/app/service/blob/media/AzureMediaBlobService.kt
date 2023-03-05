@@ -13,7 +13,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.InputStream
 import java.util.*
 
-abstract class AzureMediaService(azureBlobServiceClient: BlobServiceClient, containerName: String): MediaService {
+abstract class AzureMediaBlobService(azureBlobServiceClient: BlobServiceClient, containerName: String): MediaBlobService {
     private val blobContainerClient: BlobContainerClient = azureBlobServiceClient.createBlobContainer(containerName.lowercase(Locale.getDefault()))
 
     override fun save(inputStream: InputStream, creatorId: UUID, private: Boolean): Single<UUID> = Single.create<UUID> {

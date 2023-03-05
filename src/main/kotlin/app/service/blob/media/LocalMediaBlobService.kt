@@ -12,7 +12,7 @@ import java.io.InputStream
 import java.util.UUID
 import kotlin.concurrent.thread
 
-abstract class LocalMediaService(private val containerName: String): MediaService {
+abstract class LocalMediaBlobService(private val containerName: String): MediaBlobService {
 
     private val storageDir: String = System.getenv("LOCAL_CLOUD_BLOB_STORAGE_DIR")!!
     private val storageContainer: File = getStorageContainer()
@@ -193,6 +193,6 @@ abstract class LocalMediaService(private val containerName: String): MediaServic
     override fun deleteByIdIfExists(id: UUID, clientId: UUID): Single<Boolean> = deleteById(id, clientId)
 
     companion object {
-        private val logger: Logger = LoggerFactory.getLogger(LocalMediaService::class.java)
+        private val logger: Logger = LoggerFactory.getLogger(LocalMediaBlobService::class.java)
     }
 }

@@ -1,6 +1,6 @@
 package app.endpoints.rest.media
 
-import app.service.blob.media.audio.AudioBlobService
+import app.service.blob.media.audio.AudioBlobBlobService
 import app.service.blob.media.image.ImageBlobService
 import app.service.blob.media.video.VideoBlobService
 import com.datastax.oss.driver.api.core.uuid.Uuids
@@ -19,7 +19,7 @@ class MediaControllersTest(
     @Named("local")
     private val imageBlobService: ImageBlobService,
     @Named("local")
-    private val audioBlobService: AudioBlobService
+    private val audioBlobService: AudioBlobBlobService
 ): StringSpec({
 
     val basePath = "./src/test/resources/media"

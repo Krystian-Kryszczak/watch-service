@@ -1,5 +1,5 @@
 package app.service.blob.media.image
 
-import app.service.blob.media.MediaService
+import app.service.blob.media.MediaBlobService
 
-interface ImageService: MediaService
+interface ImageBlobService: MediaBlobService

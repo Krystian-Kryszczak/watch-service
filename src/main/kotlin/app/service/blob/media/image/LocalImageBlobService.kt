@@ -1,7 +1,7 @@
 package app.service.blob.media.image
 
-import app.service.blob.media.LocalMediaService
+import app.service.blob.media.LocalMediaBlobService
 import jakarta.inject.Singleton
 
 @Singleton
-class LocalImageService: LocalMediaService("image"), ImageService
+class LocalImageBlobService: LocalMediaBlobService("image"), ImageBlobService

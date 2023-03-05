@@ -1,9 +1,8 @@
 package app.endpoints
 
 import app.model.exhibit.watch.Watch
+import app.model.exhibit.watch.WatchModel
 import app.service.exhibit.watch.WatchService
-import app.utils.SecurityUtils
-import com.datastax.oss.driver.api.core.uuid.Uuids
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
@@ -33,27 +32,23 @@ class WatchEndpoint(private val watchService: WatchService) {
 
     @Secured(SecurityRule.IS_AUTHENTICATED)
     @Post(consumes = [MediaType.MULTIPART_FORM_DATA])
-    fun add(@Part watch: Watch, @Part content: StreamingFileUpload, @Part miniature: StreamingFileUpload?, authentication: Authentication): Single<out HttpResponse<UUID>> {
-        if (watch.isInvalid()) return Single.just(HttpResponse.status(HttpStatus.BAD_REQUEST, "watch is invalid"))
+    fun add(@Part watchModel: WatchModel, @Part content: StreamingFileUpload,
+            @Part miniature: StreamingFileUpload?, authentication: Authentication): Single<out HttpResponse<UUID>> {
 
-        val generatedWatchId = Uuids.timeBased()
-        val clientId = SecurityUtils.getClientId(authentication) ?: return Single.just(HttpResponse.unauthorized())
 
-        watch.id = generatedWatchId
-        watch.creatorId = clientId
+        val watch: Watch = watchModel.convert(authentication) ?: return Single.just(invalidWatchModelResp)
 
-        return watchService.add(
-            watch,
-            content, miniature
-        ).map {
-            HttpResponse.created(generatedWatchId)
-        }.onErrorReturn {
-            logger.error(it.message, it.stackTrace)
-            return@onErrorReturn HttpResponse.serverError()
-        }
+        return watchService.add(watch, content, miniature)
+            .map { HttpResponse.created(it) }
+            .defaultIfEmpty(invalidWatchModelResp)
+            .onErrorReturn {
+                logger.error(it.message, it.stackTrace)
+                HttpResponse.serverError()
+            }
     }
-    private fun Watch.isInvalid(): Boolean = id != null || creatorId != null
+
     companion object {
         private val logger = LoggerFactory.getLogger(WatchEndpoint::class.java)
+        private val invalidWatchModelResp = HttpResponse.status<UUID>(HttpStatus.BAD_REQUEST, "Watch model is invalid.")
     }
 }

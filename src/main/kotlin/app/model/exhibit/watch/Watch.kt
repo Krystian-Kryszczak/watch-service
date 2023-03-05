@@ -9,9 +9,9 @@ import java.util.UUID
 @SchemaHint(targetElement = SchemaHint.TargetElement.TABLE)
 data class Watch(
     @PartitionKey
-    override var id: UUID? = null,
+    override val id: UUID? = null,
     override var name: String? = null,
-    override var creatorId: UUID? = null,
+    override val creatorId: UUID? = null,
     var description: String? = null,
     override var views: Int = 0,
     override var rating: Int = 0,

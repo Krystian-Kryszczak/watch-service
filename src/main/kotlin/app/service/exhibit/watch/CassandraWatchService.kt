@@ -46,13 +46,17 @@ class CassandraWatchService(
                 return@map watch
             } else Maybe.empty()
         }
-    override fun add(item: Watch, content: StreamingFileUpload, miniature: StreamingFileUpload?): Single<Boolean> {
-        if (item.id == null || item.creatorId == null) return Single.just(false)
+    override fun add(item: Watch, content: StreamingFileUpload, miniature: StreamingFileUpload?): Maybe<UUID> {
+        if (item.id == null || item.creatorId == null) return Maybe.empty()
         return save(item)
-            .andThen(videoBlobService.save(item.id!!, content, item.creatorId!!, item.private))
-            .flatMap {
-                if (miniature != null) imageBlobService.save(item.id!!, miniature, item.creatorId!!, item.private)
-                else Single.just(it)
+            .andThen(videoBlobService.save(item.id, content, item.creatorId, item.private))
+            .flatMapMaybe {
+                if (miniature != null) {
+                    imageBlobService.save(item.id, miniature, item.creatorId, item.private)
+                        .flatMapMaybe { Maybe.just(item.id) }
+                } else {
+                    Maybe.empty()
+                }
             }
     }
     override fun deleteById(id: UUID): Completable = Completable.fromPublisher(watchDao.deleteByIdReactive(id))
