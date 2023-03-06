@@ -70,7 +70,7 @@ class MailerServiceGrpc(private val mailerServiceStub: MailerServiceStub, privat
     }
     private fun extractAvatarUrl(user: User): String? {
         val id = user.id
-        return if (id != null) "/images/$id" else null // TODO change endpoint address
+        return if (id != null) "/images/$id" else null
     }
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(MailerServiceGrpc::class.java)

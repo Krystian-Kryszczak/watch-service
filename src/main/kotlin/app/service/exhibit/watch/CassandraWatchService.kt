@@ -13,7 +13,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
-import jakarta.inject.Named
 import jakarta.inject.Singleton
 import java.util.UUID
 
@@ -21,9 +20,10 @@ import java.util.UUID
 class CassandraWatchService(
     private val watchDao: WatchDao,
     private val userService: UserService,
-    @Named("local") private val videoBlobService: VideoBlobService,
-    @Named("local") private val imageBlobService: ImageBlobService
+    private val videoBlobService: VideoBlobService,
+    private val imageBlobService: ImageBlobService
 ): WatchService, AbstractExhibitService<Watch>(watchDao) {
+
     override fun propose(authentication: Authentication?): Flowable<Watch> = Flowable.fromPublisher(watchDao.findReactive(10)).flatMapSingle { watch ->
         val creatorId = watch.creatorId
         return@flatMapSingle if (creatorId != null) userService.findByIdAsync(creatorId).map { user ->
@@ -34,6 +34,7 @@ class CassandraWatchService(
             Single.just(watch)
         }
     }
+
     override fun findById(id: UUID, authentication: Authentication?): Maybe<Watch> =
         findById(id)
         .filter {
@@ -46,6 +47,7 @@ class CassandraWatchService(
                 return@map watch
             } else Maybe.empty()
         }
+
     override fun add(item: Watch, content: StreamingFileUpload, miniature: StreamingFileUpload?): Maybe<UUID> {
         if (item.id == null || item.creatorId == null) return Maybe.empty()
         return save(item)
@@ -59,6 +61,8 @@ class CassandraWatchService(
                 }
             }
     }
+
     override fun deleteById(id: UUID): Completable = Completable.fromPublisher(watchDao.deleteByIdReactive(id))
+
     override fun deleteByIdIfExists(id: UUID): Single<Boolean> = Single.fromPublisher(watchDao.deleteByIdIfExistsReactive(id))
 }
