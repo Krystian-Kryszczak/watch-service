@@ -1,6 +1,5 @@
 package app.model.exhibit
 
-import app.model.HasUrl
 import app.model.NamedItem
 import com.datastax.oss.driver.api.core.uuid.Uuids
 import com.datastax.oss.driver.api.mapper.annotations.Transient
@@ -14,7 +13,7 @@ abstract class Exhibit(
     open var views: Int = 0,
     open var rating: Int = 0,
     open var private: Boolean = false,
-): NamedItem(id, name), HasUrl {
+): NamedItem(id, name) {
     @Transient
     var creatorName: String? = null
     @Transient
