@@ -1,7 +1,6 @@
 package app.service.exhibit.watch
 
 import app.model.exhibit.watch.Watch
-import app.service.being.user.UserService
 import app.service.blob.media.image.ImageBlobService
 import app.service.blob.media.video.VideoBlobService
 import app.service.exhibit.AbstractExhibitService
@@ -19,34 +18,16 @@ import java.util.UUID
 @Singleton
 class CassandraWatchService(
     private val watchDao: WatchDao,
-    private val userService: UserService,
     private val videoBlobService: VideoBlobService,
     private val imageBlobService: ImageBlobService
 ): WatchService, AbstractExhibitService<Watch>(watchDao) {
 
-    override fun propose(authentication: Authentication?): Flowable<Watch> = Flowable.fromPublisher(watchDao.findReactive(10)).flatMapSingle { watch ->
-        val creatorId = watch.creatorId
-        return@flatMapSingle if (creatorId != null) userService.findByIdAsync(creatorId).map { user ->
-            watch.creatorName = (user.name ?: "·") + " " + (user.lastname ?: "·")
-            return@map watch
-        }.defaultIfEmpty(watch)
-        else {
-            Single.just(watch)
-        }
-    }
+    override fun propose(authentication: Authentication?): Flowable<Watch> = Flowable.fromPublisher(watchDao.findReactive(10))
 
     override fun findById(id: UUID, authentication: Authentication?): Maybe<Watch> =
-        findById(id)
-        .filter {
-            !it.private || SecurityUtils.clientIsCreator(it.creatorId, authentication)
-        }
-        .flatMap { watch ->
-            val creatorId = watch.creatorId
-            if (creatorId != null) userService.findByIdAsync(creatorId).map { user ->
-                watch.creatorName = (user.name ?: "·") + " " + (user.lastname ?: "·")
-                return@map watch
-            } else Maybe.empty()
-        }
+        findById(id).filter { it.canUserSeeIt(authentication) }
+
+    private fun Watch.canUserSeeIt(authentication: Authentication?): Boolean = !private || SecurityUtils.clientIsCreator(creatorId, authentication)
 
     override fun add(item: Watch, content: StreamingFileUpload, miniature: StreamingFileUpload?): Maybe<UUID> {
         if (item.id == null || item.creatorId == null) return Maybe.empty()
@@ -55,7 +36,7 @@ class CassandraWatchService(
             .flatMapMaybe {
                 if (miniature != null) {
                     imageBlobService.save(item.id, miniature, item.creatorId, item.private)
-                        .flatMapMaybe { Maybe.just(item.id) }
+                    .flatMapMaybe { Maybe.just(item.id) }
                 } else {
                     Maybe.empty()
                 }
