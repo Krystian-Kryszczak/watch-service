@@ -19,7 +19,6 @@ class MailerServiceGrpc(private val mailerServiceStub: MailerServiceStub, privat
     override fun sendNewVideoNotification(address: String, video: Watch): Single<Boolean> {
         val videoName = video.name ?: return singleFalse
         val creatorId = video.creatorId ?: return singleFalse
-        val videoId = video.id ?: return singleFalse
 
         return userService.findByIdAsync(creatorId).map {
             user -> NotificationRequest.newBuilder()

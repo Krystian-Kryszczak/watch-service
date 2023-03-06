@@ -41,7 +41,7 @@ dependencies {
 
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("io.micronaut.azure:micronaut-azure-sdk:4.0.0")
+    implementation("io.micronaut.azure:micronaut-azure-sdk:3.9.0")
     implementation("io.micronaut.objectstorage:micronaut-object-storage-core")
     //implementation("io.micronaut.azure:micronaut-azure-function:4.0.0")
     implementation("com.azure:azure-storage-blob:12.20.1")
