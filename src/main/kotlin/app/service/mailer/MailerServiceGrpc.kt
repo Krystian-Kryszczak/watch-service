@@ -26,7 +26,7 @@ class MailerServiceGrpc(private val mailerServiceStub: MailerServiceStub, privat
                 .setAuthor(formatAuthorData(user))
                 .setAvatarUrl(extractAvatarUrl(user))
                 .setTitle(videoName)
-                .setLink(video.getUrl())
+                .setLink(extractVideoUrl(video))
                 .build()
         }.flatMapSingle { notificationRequest ->
             asObservable<MailerReply> {
@@ -70,6 +70,10 @@ class MailerServiceGrpc(private val mailerServiceStub: MailerServiceStub, privat
     private fun extractAvatarUrl(user: User): String? {
         val id = user.id
         return if (id != null) "/images/$id" else null
+    }
+    private fun extractVideoUrl(watch: Watch): String? {
+        val id = watch.id
+        return if (id != null) "/video/$id" else null
     }
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(MailerServiceGrpc::class.java)
