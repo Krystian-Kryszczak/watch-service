@@ -16,6 +16,7 @@ class CassandraStartup(private val cqlSession: CqlSession) {
 
     @EventListener
     internal fun onStartupEvent(event: StartupEvent) {
+        event.source
         createUserTable()
         createWatchTable()
     }

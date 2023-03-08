@@ -62,18 +62,18 @@ application {
     mainClass.set("app.ApplicationKt")
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("17")
+    sourceCompatibility = JavaVersion.toVersion("11")
 }
 
 tasks {
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            jvmTarget = "11"
         }
     }
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            jvmTarget = "11"
         }
     }
     jib {
