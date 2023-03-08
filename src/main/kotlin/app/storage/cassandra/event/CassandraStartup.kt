@@ -13,19 +13,13 @@ import org.slf4j.LoggerFactory
 
 @Singleton
 class CassandraStartup(private val cqlSession: CqlSession) {
+
     @EventListener
     internal fun onStartupEvent(event: StartupEvent) {
-        //event.source
-        createKeyspace()
         createUserTable()
         createWatchTable()
     }
-    private fun createKeyspace() = execute(
-        SchemaBuilder
-            .createKeyspace(cqlSession.keyspace.get()).ifNotExists()
-            .withSimpleStrategy(2)
-            .build()
-    )
+
     private fun createUserTable() = execute(
         SchemaBuilder
             .createTable("user").ifNotExists()
@@ -38,28 +32,34 @@ class CassandraStartup(private val cqlSession: CqlSession) {
             .withColumn("sex", DataTypes.TINYINT)
             .build()
     )
+
     private fun createWatchTable() = execute(
         getExhibitTableBase("watch")
             .withColumn("description", DataTypes.TEXT)
             .build()
     )
+
     private fun getExhibitTableBase(name: String): CreateTable =
         getNamedItemTableBase(name)
             .withColumn("creator_id", DataTypes.TIMEUUID)
             .withColumn("views", DataTypes.INT)
             .withColumn("rating", DataTypes.INT)
             .withColumn("private", DataTypes.BOOLEAN)
+
     private fun getNamedItemTableBase(name: String): CreateTable =
         getItemTableBase(name)
             .withColumn("name", DataTypes.TEXT)
+
     private fun getItemTableBase(name: String): CreateTable =
         SchemaBuilder
             .createTable(name).ifNotExists()
             .withPartitionKey("id", DataTypes.TIMEUUID)
+
     private fun execute(statement: SimpleStatement) {
         cqlSession.execute(statement)
         logger.info("Query \"${statement.query}\" was executed.")
     }
+
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(CassandraStartup::class.java)
     }
