@@ -4,7 +4,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen") version "1.6.21"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.micronaut.application") version "3.6.7"
-    id("com.google.cloud.tools.jib") version "2.8.0"
     id("com.google.protobuf") version "0.8.15"
 }
 
@@ -43,18 +42,14 @@ dependencies {
 
     implementation("io.micronaut.azure:micronaut-azure-sdk:3.9.0")
     implementation("io.micronaut.objectstorage:micronaut-object-storage-core")
-    //implementation("io.micronaut.azure:micronaut-azure-function:4.0.0")
     implementation("com.azure:azure-storage-blob:12.20.1")
-    //annotationProcessor("io.micronaut.azure:micronaut-inject-java")
     implementation platform('com.google.cloud:libraries-bom:26.3.0')
     implementation('com.google.cloud:google-cloud-storage')
 
-    //implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
     implementation("io.grpc:grpc-kotlin-stub:1.3.0")
     implementation("io.grpc:grpc-protobuf:1.39.0")
     implementation("io.grpc:grpc-netty:1.51.3")
     compileOnly("io.grpc:grpc-stub:1.51.0")
-//    implementation("io.micronaut.grpc:micronaut-grpc-client-runtime:3.5.0-SNAPSHOT")
 }
 
 
@@ -62,23 +57,18 @@ application {
     mainClass.set("app.ApplicationKt")
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("11")
+    sourceCompatibility = JavaVersion.toVersion("17")
 }
 
 tasks {
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "11"
+            jvmTarget = "17"
         }
     }
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = "11"
-        }
-    }
-    jib {
-        to {
-            image = "gcr.io/myapp/jib-image"
+            jvmTarget = "17"
         }
     }
 }
@@ -86,7 +76,6 @@ sourceSets {
     main {
         java {
             srcDirs("build/generated/source/proto/main/grpc")
-            //srcDirs("build/generated/source/proto/main/grpckt")
             srcDirs("build/generated/source/proto/main/java")
         }
     }
@@ -100,7 +89,6 @@ protobuf {
     generateProtoTasks {
         all()*.plugins {
             grpc {}
-            //grpckt {}
         }
     }
 }
@@ -113,6 +101,3 @@ micronaut {
         annotations("app.*")
     }
 }
-
-
-
