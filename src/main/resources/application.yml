@@ -20,7 +20,14 @@ micronaut:
     max-request-size: 4GB
     multipart:
       max-file-size: 4GB
-#    http-version: http_2_0
+grpc:
+  client:
+    max-retry-attempts: 10
+  channels:
+    mailer:
+      for-address: ${MAILER_GRPC_HOST:127.0.0.1}:${MAILER_GRPC_PORT:50011}
+      plaintext: true
+      max-retry-attempts: 10
 netty:
   default:
     allocator:

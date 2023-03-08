@@ -1,6 +1,6 @@
 package app.factory.rpc
 
-import app.MailerServiceGrpc
+import app.SmtpMailerServiceGrpc
 import io.grpc.ManagedChannelBuilder
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
