@@ -18,5 +18,5 @@ class CassandraFactory(cqlSession: CqlSession) {
     @Singleton
     fun userDao(): UserDao = daoMapper.userDao(keyspace)
     @Singleton
-    fun lookDao(): WatchDao = daoMapper.lookDao(keyspace)
+    fun watchDao(): WatchDao = daoMapper.watchDao(keyspace)
 }

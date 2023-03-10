@@ -35,18 +35,16 @@ netty:
 cassandra:
   default:
     advanced:
-      #      ssl: true
-      #      ssl-engine-factory: DefaultSslEngineFactory
+      ssl: false
+      ssl-engine-factory: DefaultSslEngineFactory
       metadata:
         schema:
           enabled: true
-    #      auth-provider:
-    #        class: PlainTextAuthProvider
-    #        username: "XXXXXX"
-    #        password: "XXXXXX"
     basic:
       contact-points:
         - ${CASSANDRA_HOST:127.0.0.1}:${CASSANDRA_PORT:9042}
       load-balancing-policy:
         local-datacenter: ${CASSANDRA_DATA_CENTER:datacenter1}
       session-keyspace: app
+blob:
+  cloud-name: azure

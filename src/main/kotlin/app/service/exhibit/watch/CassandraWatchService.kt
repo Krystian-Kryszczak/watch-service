@@ -12,14 +12,15 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
+import jakarta.inject.Named
 import jakarta.inject.Singleton
 import java.util.UUID
 
 @Singleton
 class CassandraWatchService(
     private val watchDao: WatchDao,
-    private val videoBlobService: VideoBlobService,
-    private val imageBlobService: ImageBlobService
+    @Named("\${blob.cloud-name}") val videoBlobService: VideoBlobService,
+    @Named("\${blob.cloud-name}") private val imageBlobService: ImageBlobService
 ): WatchService, AbstractExhibitService<Watch>(watchDao) {
 
     override fun propose(authentication: Authentication?): Flowable<Watch> = Flowable.fromPublisher(watchDao.findReactive(10))
