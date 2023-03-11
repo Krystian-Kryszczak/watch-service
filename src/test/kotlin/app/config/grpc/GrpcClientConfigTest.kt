@@ -9,7 +9,7 @@ import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 @MicronautTest
 class GrpcClientConfigTest(private val grpcClientConfig: GrpcClientConfig) : StringSpec({
 
-    "grpc client config values should not contain null" {
+    "grpc client configuration values should not contain null" {
         listOf(
             grpcClientConfig.maxRetryAttempts
         ) shouldNotContain null
