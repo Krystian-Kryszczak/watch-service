@@ -48,3 +48,6 @@ cassandra:
       session-keyspace: app
 blob:
   cloud-name: azure
+azure:
+  blob:
+    endpoint: ${AZURE_BLOB_ENDPOINT:localhost}
