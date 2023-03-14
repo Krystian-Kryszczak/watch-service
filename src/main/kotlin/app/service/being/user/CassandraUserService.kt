@@ -12,9 +12,9 @@ import java.util.UUID
 
 @Singleton
 class CassandraUserService(private val userDao: UserDao): UserService, AbstractItemService<User>(userDao) {
-    override fun saveAsync(user: User): Completable = Completable.fromPublisher(userDao.saveReactive(user))
-    override fun findByIdAsync(id: UUID): Maybe<User> = Maybe.fromPublisher(userDao.findByIdReactive(id))
-    override fun findByEmailAsync(email: String): Maybe<User> = Flowable.fromPublisher(userDao.findByEmailReactive(email)).firstElement()
+    override fun saveReactive(user: User): Completable = Completable.fromPublisher(userDao.saveReactive(user))
+    override fun findByIdReactive(id: UUID): Maybe<User> = Maybe.fromPublisher(userDao.findByIdReactive(id))
+    override fun findByEmailReactive(email: String): Maybe<User> = Flowable.fromPublisher(userDao.findByEmailReactive(email)).firstElement()
     override fun deleteById(id: UUID): Completable = Completable.fromPublisher(userDao.deleteByIdReactive(id))
     override fun deleteByIdIfExists(id: UUID): Single<Boolean> = Single.fromPublisher(userDao.deleteByIdIfExistsReactive(id))
 }

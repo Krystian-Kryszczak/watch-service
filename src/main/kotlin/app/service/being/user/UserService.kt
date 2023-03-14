@@ -7,7 +7,7 @@ import io.reactivex.rxjava3.core.Maybe
 import java.util.UUID
 
 interface UserService: ItemService<User> {
-    fun saveAsync(user: User): Completable
-    fun findByIdAsync(id: UUID): Maybe<User>
-    fun findByEmailAsync(email: String): Maybe<User>
+    fun saveReactive(user: User): Completable
+    fun findByIdReactive(id: UUID): Maybe<User>
+    fun findByEmailReactive(email: String): Maybe<User>
 }

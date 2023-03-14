@@ -21,7 +21,7 @@ class SmtpMailerServiceGrpc(private val smtpMailerServiceStub: SmtpMailerService
         val watchName = watch.name ?: return singleFalse
         val creatorId = watch.creatorId ?: return singleFalse
 
-        return userService.findByIdAsync(creatorId).map {
+        return userService.findByIdReactive(creatorId).map {
             user -> NotificationRequest.newBuilder()
                 .setAddress(address)
                 .setAuthor(formatAuthorData(user))
