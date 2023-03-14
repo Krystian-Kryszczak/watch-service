@@ -76,8 +76,6 @@ class UserServiceTest(private val userService: UserService): StringSpec({
         } shouldBe modifiedUser
     }
 
-
-
     afterEach {
         withContext(Dispatchers.IO) {
             userService.deleteById(testUser.id!!)
