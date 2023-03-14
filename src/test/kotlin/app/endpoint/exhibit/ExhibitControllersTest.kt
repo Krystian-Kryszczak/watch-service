@@ -1,4 +1,4 @@
-package app.endpoints.rest.exhibit
+package app.endpoint.exhibit
 
 import io.kotest.core.spec.style.StringSpec
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest

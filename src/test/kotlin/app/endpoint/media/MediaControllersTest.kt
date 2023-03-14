@@ -1,4 +1,4 @@
-package app.endpoints.media
+package app.endpoint.media
 
 import app.service.blob.media.audio.AudioBlobBlobService
 import app.service.blob.media.image.ImageBlobService

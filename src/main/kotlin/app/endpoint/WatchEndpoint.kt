@@ -1,4 +1,4 @@
-package app.endpoints
+package app.endpoint
 
 import app.model.exhibit.watch.Watch
 import app.model.exhibit.watch.WatchModel
